@@ -26,3 +26,13 @@ Roles:
  ^ Look for any semantic relations (i.e., you must be nominated to win, one winner for each category, one or two hosts / presenters per category)
 
 
+## Plan
+0.5 - write function to clean data
+
+1. write function to sort tweets into what we want (taking categories as input) (+ put into categories, can be a separate function). Later, write a function that spits out categories
+
+1.5. write function to get nominees
+
+2. write function to get "votes" for each category and predict a winner
+
+3. write functions to get "votes" for hosts, etc.
