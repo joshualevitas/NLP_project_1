@@ -29,7 +29,7 @@ Roles:
 ## Plan
 0.5 - write function to clean data
 
-1. write function to sort tweets into what we want (taking categories as input) (+ put into categories, can be a separate function). Later, write a function that spits out categories
+1. write function to sort tweets into what we want (taking categories as input) (+ put into categories, can be a separate function that stores relevant indices). Later, write a function that spits out categories
 
 1.5. write function to get nominees
 
