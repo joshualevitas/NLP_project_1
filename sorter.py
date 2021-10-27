@@ -64,6 +64,11 @@ def sorter(file, categories):
     return ret
 
 
+
+
+
+
+
 def cat_filters(csv):
     data = pd.read_csv(csv, header=None)
     index = data.index
@@ -76,17 +81,44 @@ def cat_filters(csv):
 
 
 
+
+
+
+
+def gets_vote(tweet_text):
+    #returns 1 if tweet gets to vote for winner, 0 otherwise (1 if it contains "win", "won", etc.)
+    for word in win_words:
+        gets_vote = re.search(word, tweet_text)
+        if gets_vote: return 1
+    return 0 
+
+
+
 #function to read through tweets, look for names of nominees, "win, won, goes to", etc. 
 #tally and guess (make sure that the type is correct)
 
 #put inside shell function
 
-def guess_winner(categories, category_filters, nominees):
+def guess_winner(file, categories, category_filters, nominees):
+    f = open(file)
+    data = json.load(f)
+    
+
+    print(data[0])
+
+
     winners = []
     for cat in range(len(categories)):
-        #look at each tweet, vote for winner?
-        pass
+        for relevant_tweet_idx in category_filters[cat]:
+            # print(relevant_tweet_idx)
+            if gets_vote(data[relevant_tweet_idx]['text']):
+                print(data[relevant_tweet_idx]['text'])
 
+
+        #look at each relevant tweet, vote for winner?
+        
+            
+    
 
     
 
@@ -125,17 +157,10 @@ def get_dist(arr):
 # np.savetxt("processed_tweets.csv", x, delimiter=",")
 
     
-for cat in categories:
-    print(winner_data['award_data'][cat]['nominees'])
+# for cat in categories:
+#     print(winner_data['award_data'][cat]['nominees'])
+guess_winner(filepath, categories, cat_filters("/Users/joshlevitas/Desktop/processed_tweets.csv"), "placeholder")
 
 
-def gets_vote(tweet_text):
-    #returns 1 if tweet gets to vote for winner, 0 otherwise (1 if it contains "win", "won", etc.)
-    for word in win_words:
-        gets_vote = re.search(word, tweet_text)
-        if gets_vote: return 1
-    return 0 
 
-if gets_vote("he wins!"):
-    print("all gucci")
 
