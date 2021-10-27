@@ -10,6 +10,7 @@ winner_data = {"hosts": ["amy poehler", "tina fey"], "award_data": {"best screen
 categories = ["best screenplay - motion picture","best director - motion picture", "best performance by an actress in a television series - comedy or musical", "best foreign language film", "best performance by an actor in a supporting role in a motion picture", "best performance by an actress in a supporting role in a series, mini-series or motion picture made for television", "best motion picture - comedy or musical", "best performance by an actress in a motion picture - comedy or musical", "best mini-series or motion picture made for television", "best original score - motion picture","best performance by an actress in a television series - drama", "best performance by an actress in a motion picture - drama","cecil b. demille award", "best performance by an actor in a motion picture - comedy or musical", "best motion picture - drama","best performance by an actor in a supporting role in a series, mini-series or motion picture made for television", "best performance by an actress in a supporting role in a motion picture", "best television series - drama", "best performance by an actor in a mini-series or motion picture made for television", "best performance by an actress in a mini-series or motion picture made for television","best animated feature film","best original song - motion picture","best performance by an actor in a motion picture - drama", "best television series - comedy or musical","best performance by an actor in a television series - drama","best performance by an actor in a television series - comedy or musical"]
 
 stop_words = ['to', '-', 'the', 'in', 'not', 'too', 'best']
+win_words = ["won", "goes to", "win"] #add more if necessary
 
 
 ###
@@ -63,21 +64,6 @@ def sorter(file, categories):
     return ret
 
 
-
-def cat_filter(file, categories):
-    #returns an array with indices of each related? tweet
-    arr = sorter(file, categories)
-    ret = []
-    
-    for cat in range(len(categories)):
-        tmp = []
-        for tweet in arr:
-            if tweet[cat] == 1:
-                tmp.append(tweet)
-        ret.append(tmp)
-
-    return ret
-
 def cat_filters(csv):
     data = pd.read_csv(csv, header=None)
     index = data.index
@@ -87,7 +73,6 @@ def cat_filters(csv):
         ret.append(index[data[i]==1])
 
     return ret
-
 
 
 
@@ -142,3 +127,15 @@ def get_dist(arr):
     
 for cat in categories:
     print(winner_data['award_data'][cat]['nominees'])
+
+
+def gets_vote(tweet_text):
+    #returns 1 if tweet gets to vote for winner, 0 otherwise (1 if it contains "win", "won", etc.)
+    for word in win_words:
+        gets_vote = re.search(word, tweet_text)
+        if gets_vote: return 1
+    return 0 
+
+if gets_vote("he wins!"):
+    print("all gucci")
+
