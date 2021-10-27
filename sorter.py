@@ -2,7 +2,7 @@ import numpy as np
 import json
 import pandas as pd
 import re
-
+from bs4 import BeautifulSoup
 
 filepath = "/Users/joshlevitas/Desktop/School/CS_337/project 1 data/gg2013.json" #2013
 
@@ -88,11 +88,6 @@ def cat_filters(csv):
 
     return ret
 
-        
-
-
-#start with the first category, go through all of its tweets, then guess winner.
-            
 
 
 
@@ -101,10 +96,11 @@ def cat_filters(csv):
 
 #put inside shell function
 
-def guess_winner(category, file):
-    f = open(file) 
-    data = json.load(f)
-    pass
+def guess_winner(categories, category_filters, nominees):
+    winners = []
+    for cat in range(len(categories)):
+        #look at each tweet, vote for winner?
+        pass
 
 
     
@@ -144,4 +140,5 @@ def get_dist(arr):
 # np.savetxt("processed_tweets.csv", x, delimiter=",")
 
     
-
+for cat in categories:
+    print(winner_data['award_data'][cat]['nominees'])
