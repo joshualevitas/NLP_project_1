@@ -48,7 +48,7 @@ def sorter(file, categories):
         
 
         for cat in range(len(categories)):
-            nominees = winner_data['award_data'][categories[cat]]['nominees']
+            nominees = winner_data['award_data'][categories[cat]]['nominees'] #rewrite line to get_nominees(...)
 
 
             for nom in nominees:
@@ -99,21 +99,51 @@ def gets_vote(tweet_text):
 
 #put inside shell function
 
+def max_idx(arr):
+    max = 0
+    max_idx = 0
+    for elt in range(len(arr)):
+        if arr[elt] > max:
+            max = arr[elt]
+            max_idx = elt
+    return max_idx
+
+
+
+
+
 def guess_winner(file, categories, category_filters, nominees):
     f = open(file)
     data = json.load(f)
     
 
-    print(data[0])
 
 
     winners = []
     for cat in range(len(categories)):
-        for relevant_tweet_idx in category_filters[cat]:
-            # print(relevant_tweet_idx)
-            if gets_vote(data[relevant_tweet_idx]['text']):
-                print(data[relevant_tweet_idx]['text'])
+        nom_votes = [0]*len(nominees[cat])
 
+        for relevant_tweet_idx in category_filters[cat]:
+            if gets_vote(data[relevant_tweet_idx]['text']):
+                #figure out which category? maybe not
+                #vote!
+                for nom in range(len(nominees[cat])):
+                    nom_ = [word for word in nominees[cat][nom].split() if not word in stop_words]
+                    for n in nom_:
+                        #first and last names / movie title individual words
+                        if n in data[relevant_tweet_idx]['text'].lower():
+                            nom_votes[nom] += 1
+
+                
+        # winners.append(nominees[cat][max_idx(nom_votes)])
+       
+        if nominees[cat] != []:
+            winners.append(nominees[cat][max_idx(nom_votes)])
+        else:
+            winners.append(['?'])
+    
+    return winners
+        
 
         #look at each relevant tweet, vote for winner?
         
@@ -146,6 +176,20 @@ def get_dist(arr):
     return cat_totals
 
 
+def organize_nominees():
+    ret = []
+    for i in range(len(categories)):
+        ret.append(winner_data["award_data"][categories[i]]['nominees'])
+    
+    return ret
+
+def organize_winners():
+    ret = []
+    for i in range(len(categories)):
+        ret.append(winner_data["award_data"][categories[i]]['winner'])
+    
+    return ret
+
 
 
 
@@ -159,8 +203,11 @@ def get_dist(arr):
     
 # for cat in categories:
 #     print(winner_data['award_data'][cat]['nominees'])
-guess_winner(filepath, categories, cat_filters("/Users/joshlevitas/Desktop/processed_tweets.csv"), "placeholder")
+# print(len(organize_nominees()))
+# print(organize_nominees()[13])
 
-
-
+print("actual winners: ")
+print(organize_winners())
+print("guesses: ")
+print(guess_winner(filepath, categories, cat_filters("/Users/joshlevitas/Desktop/processed_tweets.csv"), organize_nominees()))
 
