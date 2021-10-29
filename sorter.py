@@ -48,7 +48,21 @@ def sorter(file, categories):
         
 
         for cat in range(len(categories)):
-            nominees = winner_data['award_data'][categories[cat]]['nominees'] #rewrite line to get_nominees(...)
+            
+            
+            ### REWORK AFTER STEP 1
+            nominees_ = winner_data['award_data'][categories[cat]]['nominees'] #rewrite line to get_nominees(...)
+            # nominees.append(winner_data['award_data'][categories[cat]]['winner'])
+            # print(nominees)
+            winner = winner_data['award_data'][categories[cat]]['winner']
+            nominees = [winner]
+            for n in nominees_:
+                nominees.append(n)
+            
+    
+            ###
+            
+
 
 
             for nom in nominees:
@@ -118,7 +132,6 @@ def guess_winner(file, categories, category_filters, nominees):
     
 
 
-
     winners = []
     for cat in range(len(categories)):
         nom_votes = [0]*len(nominees[cat])
@@ -133,6 +146,7 @@ def guess_winner(file, categories, category_filters, nominees):
                         #first and last names / movie title individual words
                         if n in data[relevant_tweet_idx]['text'].lower():
                             nom_votes[nom] += 1
+                            break
 
                 
         # winners.append(nominees[cat][max_idx(nom_votes)])
@@ -179,7 +193,11 @@ def get_dist(arr):
 def organize_nominees():
     ret = []
     for i in range(len(categories)):
-        ret.append(winner_data["award_data"][categories[i]]['nominees'])
+
+        tmp = winner_data["award_data"][categories[i]]['nominees']
+        tmp.append(winner_data["award_data"][categories[i]]['winner'])
+        ret.append(tmp)
+
     
     return ret
 
@@ -206,8 +224,17 @@ def organize_winners():
 # print(len(organize_nominees()))
 # print(organize_nominees()[13])
 
-print("actual winners: ")
-print(organize_winners())
-print("guesses: ")
-print(guess_winner(filepath, categories, cat_filters("/Users/joshlevitas/Desktop/processed_tweets.csv"), organize_nominees()))
 
+truths = organize_winners()
+guesses = guess_winner(filepath, categories, cat_filters("/Users/joshlevitas/Desktop/processed_tweets.csv"), organize_nominees())
+
+denom = len(truths)
+numir = 0
+
+for i in range(len(truths)):
+    if truths[i] == guesses[i]:
+        numir += 1
+
+print(numir/denom)
+
+# print(organize_nominees())
