@@ -3,6 +3,7 @@ import json
 import pandas as pd
 import re
 from bs4 import BeautifulSoup
+import nltk
 
 filepath = "/Users/joshlevitas/Desktop/School/CS_337/project 1 data/gg2013.json" #2013
 
@@ -164,9 +165,12 @@ def guess_winner(file, categories, category_filters, nominees):
             
     
 
+
+
+
     
 
-#tests
+# tests #### 
 
 
 
@@ -237,4 +241,11 @@ for i in range(len(truths)):
 
 print(numir/denom)
 
+
+
 # print(organize_nominees())
+
+f = open(filepath)
+data = json.load(f)
+
+print(data[11])
