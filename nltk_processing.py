@@ -7,6 +7,7 @@ import json
 # cp = nltk.RegexpParser(pattern)
 stop_words = ['@', 'Golden', 'Globes', 'RT', 'GoldenGlobes']
 
+
 def preprocess(sent):
     ##only works if names are capitalized
     sent = nltk.word_tokenize(sent)
@@ -73,7 +74,7 @@ def get_hosts(file):
     ###
     for p_host in range(len(potential_hosts)):
         if len(potential_hosts[p_host].split()) == 1:
-            print(potential_hosts[p_host] + ", " + get_full_name(potential_hosts[p_host], potential_hosts))
+            # print(potential_hosts[p_host] + ", " + get_full_name(potential_hosts[p_host], potential_hosts))
             potential_hosts[p_host] = get_full_name(potential_hosts[p_host], potential_hosts)
 
 
