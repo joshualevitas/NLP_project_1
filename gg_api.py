@@ -104,3 +104,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+print(get_hosts('/Users/joshlevitas/Desktop/School/CS_337/project 1 data/gg2015.json'))
