@@ -1,3 +1,8 @@
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.tag import pos_tag
+import json 
+from nltk_processing import *
 '''Version 0.35'''
 
 OFFICIAL_AWARDS_1315 = ['cecil b. demille award', 'best motion picture - drama', 'best performance by an actress in a motion picture - drama', 'best performance by an actor in a motion picture - drama', 'best motion picture - comedy or musical', 'best performance by an actress in a motion picture - comedy or musical', 'best performance by an actor in a motion picture - comedy or musical', 'best animated feature film', 'best foreign language film', 'best performance by an actress in a supporting role in a motion picture', 'best performance by an actor in a supporting role in a motion picture', 'best director - motion picture', 'best screenplay - motion picture', 'best original score - motion picture', 'best original song - motion picture', 'best television series - drama', 'best performance by an actress in a television series - drama', 'best performance by an actor in a television series - drama', 'best television series - comedy or musical', 'best performance by an actress in a television series - comedy or musical', 'best performance by an actor in a television series - comedy or musical', 'best mini-series or motion picture made for television', 'best performance by an actress in a mini-series or motion picture made for television', 'best performance by an actor in a mini-series or motion picture made for television', 'best performance by an actress in a supporting role in a series, mini-series or motion picture made for television', 'best performance by an actor in a supporting role in a series, mini-series or motion picture made for television']
@@ -7,6 +12,44 @@ def get_hosts(year):
     '''Hosts is a list of one or more strings. Do NOT change the name
     of this function or what it returns.'''
     # Your code here
+    f = open(year)
+    data = json.load(f)
+    hosts = []
+    
+    potential_hosts = []
+    # potential_host_counts = []
+    
+    for tweet in range(len(data)):
+        if 'host' in data[tweet]['text']:
+            tweet_tokenized = nltk.word_tokenize(data[tweet]['text'])
+            tweet_tokenized = nltk.pos_tag(tweet_tokenized)
+            
+            
+            for word in range(len(tweet_tokenized)-1):
+                if tweet_tokenized[word][1] == 'NNP' and is_valid(tweet_tokenized[word][0]):
+                    if tweet_tokenized[word + 1][1] == 'NNP' and is_valid(tweet_tokenized[word + 1][0]):
+                        potential_hosts.append(tweet_tokenized[word][0] + " " + tweet_tokenized[word+1][0])
+
+                    else: potential_hosts.append(tweet_tokenized[word][0])
+
+    ###
+    for p_host in range(len(potential_hosts)):
+        if len(potential_hosts[p_host].split()) == 1:
+            # print(potential_hosts[p_host] + ", " + get_full_name(potential_hosts[p_host], potential_hosts))
+            potential_hosts[p_host] = get_full_name(potential_hosts[p_host], potential_hosts)
+
+
+    hosts.append(max(set(potential_hosts), key = potential_hosts.count))
+    
+    for p_host in potential_hosts:
+        if p_host == hosts[0]:
+            potential_hosts.remove(p_host)
+    
+    hosts.append(max(set(potential_hosts), key = potential_hosts.count))
+
+
+        
+        
     return hosts
 
 def get_awards(year):
@@ -42,6 +85,11 @@ def pre_ceremony():
     plain text file. It is the first thing the TA will run when grading.
     Do NOT change the name of this function or what it returns.'''
     # Your code here
+    
+
+
+
+
     print("Pre-ceremony processing complete.")
     return
 
