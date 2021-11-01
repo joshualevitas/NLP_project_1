@@ -36,3 +36,16 @@ Roles:
 2. write function to get "votes" for each category and predict a winner
 
 3. write functions to get "votes" for hosts, etc.
+
+
+
+## Instructions for running
+
+As of now, our get_hosts function seems to be working great.
+To use it, call get_hosts(year) where year is the link to the json file of tweets.
+
+There will be instructions when you try to call functions after running main. For some of the functions, we need the hardcoded list of awards that canvas mentions we will default to to avoid cascading error.
+
+Thanks for the help.
+
+-Komal and Josh
