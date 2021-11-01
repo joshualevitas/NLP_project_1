@@ -279,7 +279,7 @@ def get_nominees(year, categories, cat_filters):
 
 
 # print(get_hosts("/Users/joshlevitas/Desktop/School/CS_337/project 1 data/gg2013.json"))
-print(get_nominees("/Users/joshlevitas/Desktop/School/CS_337/project 1 data/gg2013.json", categories, cat_filters("/Users/joshlevitas/Desktop/processed_tweets_2.csv")))
+# print(get_nominees("/Users/joshlevitas/Desktop/School/CS_337/project 1 data/gg2013.json", categories, cat_filters("/Users/joshlevitas/Desktop/processed_tweets_2.csv")))
 
 #THERE ARE ALWAYS 5 Nominees
 # print(already_there("Django",['Django', 'Unchained']))

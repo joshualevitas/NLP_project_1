@@ -36,7 +36,6 @@ def get_hosts(year):
     ###
     for p_host in range(len(potential_hosts)):
         if len(potential_hosts[p_host].split()) == 1:
-            # print(potential_hosts[p_host] + ", " + get_full_name(potential_hosts[p_host], potential_hosts))
             potential_hosts[p_host] = get_full_name(potential_hosts[p_host], potential_hosts)
 
 
@@ -57,6 +56,7 @@ def get_awards(year):
     '''Awards is a list of strings. Do NOT change the name
     of this function or what it returns.'''
     # Your code here
+    awards = []
     return awards
 
 def get_nominees(year):
@@ -64,14 +64,51 @@ def get_nominees(year):
     names as keys, and each entry a list of strings. Do NOT change
     the name of this function or what it returns.'''
     # Your code here
+    # def get_nominees(year, categories, cat_filters):
+    
     return nominees
+
 
 def get_winner(year):
     '''Winners is a dictionary with the hard coded award
     names as keys, and each entry containing a single string.
     Do NOT change the name of this function or what it returns.'''
     # Your code here
+    
+    
+    f = open(year)
+    data = json.load(f)
+    
+    nominees = get_nominees(year)
+    categories = get_awards(year)
+    
+
+    winners = []
+    for cat in range(len(categories)):
+        nom_votes = [0]*len(nominees[cat])
+
+        for relevant_tweet_idx in cat_filters("processed_tweets_2.csv")[cat]:
+            if gets_vote(data[relevant_tweet_idx]['text']):
+                #figure out which category? maybe not
+                #vote!
+                for nom in range(len(nominees[cat])):
+                    nom_ = [word for word in nominees[cat][nom].split() if not word in stop_words]
+                    for n in nom_:
+                        #first and last names / movie title individual words
+                        if n in data[relevant_tweet_idx]['text'].lower():
+                            nom_votes[nom] += 1
+                            break
+
+                
+        # winners.append(nominees[cat][max_idx(nom_votes)])
+       
+        if nominees[cat] != []:
+            winners.append(nominees[cat][max_idx(nom_votes)])
+        else:
+            winners.append(['?'])
+    
     return winners
+    
 
 def get_presenters(year):
     '''Presenters is a dictionary with the hard coded award
@@ -80,6 +117,7 @@ def get_presenters(year):
     # Your code here
     return presenters
 
+
 def pre_ceremony():
     '''This function loads/fetches/processes any data your program
     will use, and stores that data in your DB or in a json, csv, or
@@ -87,11 +125,13 @@ def pre_ceremony():
     Do NOT change the name of this function or what it returns.'''
     # Your code here
     
+    #categorizing tweets
+        
+    year = input("Please enter the path to the json file of tweets for the year of the year of the golden globe awards: ")
 
-
-
-
-    print("Pre-ceremony processing complete.")
+    x = sorter(year, get_awards(year))
+    np.savetxt("processed_tweets_2.csv", x, fmt='%i', delimiter=',')
+   
     return
 
 def main():
@@ -101,9 +141,55 @@ def main():
     run when grading. Do NOT change the name of this function or
     what it returns.'''
     # Your code here
+    pre_ceremony()
+    year = input("Please enter the path to the json file of tweets for the year of the year of the golden globe awards: ")
+
+    print(get_winner(year))
+    
+
+
+
     return
 
 if __name__ == '__main__':
     main()
 
-print(get_hosts(filepath))
+def sorter(year, categories):
+    #categorizing tweets
+    f = open(year)
+    data = json.load(f)
+    ret = np.zeros(shape=(len(data),len(categories)), dtype=int)
+   
+    #assume we know nominees
+    for tweet in range(len(data)):
+        
+
+        for cat in range(len(categories)):
+            
+            
+            nominees = get_nominees(year)
+            for n in nominees:
+                nominees.append(n)
+            
+    
+            ###
+            
+
+
+
+            for nom in nominees:
+                nom_ = [word for word in nom.split() if not word in stop_words]
+                for n in nom_:
+                    #first and last names / movie title individual words
+                    if n in data[tweet]['text'].lower():
+                        ret[tweet][cat] = 1
+
+
+
+
+    return ret
+
+
+
+
+
