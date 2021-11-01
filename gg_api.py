@@ -159,7 +159,7 @@ def get_nominees(year):
                             nominees[cate]=list(set(x))
                         else:
                             nominees[cate] = list_
-    print(nominees)
+   
     
     return nominees
 
@@ -274,26 +274,28 @@ def main():
     print("What would you like to call?")
     print("get_hosts()")
     print("get_awards()")
-    print("get_nominees)")
+    print("get_nominees()")
     print("get_winner()")
     print("get_presenters()")
-
-
-    c = input("Please enter your choice.")
-    if c == "get_hosts()":
-        c = input("Please link the json file of tweets:")
-        print(get_hosts(c))
-    if c == "get_awards()":
-        print("Sorry, we couldn't figure this one out enough to submit something we were proud of.")
-    if c == "get_nominees()":
-        c = input("Please link the json file of tweets:")
-        print(get_nominees(c))
-    if c == "get_winner()":
-        c = input("Please link the json file of tweets:")
-        print(get_winner(c))
-    if c == "get_presenters()":
-        c = input("Please link the json file of tweets:")
-        print(get_presenters(c))
+    print("quit()")
+    c = ''
+    while c != 'quit()':
+        c = input("Please enter your choice.\n")
+        if c == "get_hosts()":
+            c = input("Please link the json file of tweets: ")
+            print(get_hosts(c))
+        if c == "get_awards()":
+            print("Sorry, we couldn't figure this one out enough to submit something we were proud of.")
+        if c == "get_nominees()":
+            c = input("Please link the json file of tweets: ")
+            print(get_nominees(c))
+        if c == "get_winner()":
+            c = input("Please link the json file of tweets: ")
+            print(get_winner(c))
+        if c == "get_presenters()":
+            c = input("Please link the json file of tweets: ")
+            print(get_presenters(c))
+        
     
 
 
