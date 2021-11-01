@@ -1,5 +1,8 @@
 # Josh's and Komal's Project
 Golden Globe Project Master
+https://github.com/joshualevitas/NLP_project_1
+https://github.com/joshualevitas/NLP_project_1
+https://github.com/joshualevitas/NLP_project_1
 
 What we need:
 
