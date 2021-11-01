@@ -80,7 +80,7 @@ def get_winner(year):
     data = json.load(f)
     
     nominees = get_nominees(year)
-    categories = get_awards(year)
+    categories = input("Please enter the hardcoded list of awards in the form of a comma separated list.")
     
 
     winners = []
@@ -142,9 +142,38 @@ def main():
     what it returns.'''
     # Your code here
     pre_ceremony()
-    year = input("Please enter the path to the json file of tweets for the year of the year of the golden globe awards: ")
+    print("Hello, we're a group of two and neither of us has really done this before.")
+    print("To use our functions, please see the readme for instructions.")
+    print("What would you like to call?")
+    print("get_hosts()")
+    print("get_awards()")
+    print("get_nominees)")
+    print("get_winner()")
+    print("get_presenters()")
 
-    print(get_winner(year))
+
+    c = input("Please enter your choice.")
+    if c == "get_hosts()":
+        c = input("Please link the json file of tweets:")
+        print(get_hosts(c))
+    if c == "get_awards()":
+        print("Sorry, we couldn't figure this one out enough to submit something we were proud of.")
+    if c == "get_nominees()":
+        c = input("Please link the json file of tweets:")
+        print(get_nominees(c))
+    if c == "get_winner()":
+        c = input("Please link the json file of tweets:")
+        print(get_winner(c))
+    if c == "get_presenters()":
+        c = input("Please link the json file of tweets:")
+        print(get_presenters(c))
+    
+
+
+
+
+    
+
     
 
 
