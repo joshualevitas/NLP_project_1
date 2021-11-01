@@ -4,10 +4,73 @@ from nltk.tag import pos_tag
 import json 
 from nltk_processing import *
 from sorter import *
+import numpy as np
+import pandas as pd
+import string 
+import re
+from bs4 import BeautifulSoup
+import spacy
+from spacy import displacy
+from collections import Counter
+import en_core_web_sm
+nlp = en_core_web_sm.load()
 '''Version 0.35'''
+
+movies = ["motion","picture","movie"]
+stop_words = ['to', '-', 'the', 'in', 'not', 'too', 'best']
+win_words = ["won", "goes to", "win"] #add more if necessary
+nominee_words = ["nominate","was nominated","nominating","nominated.","nominated","nominees"]
+nom_keywords = ["for","best","in","nominee"]
+nom_keywords1 = ["by","is","for","are"]
+final_nom_cat = ["actor","director","movie","actress","tv","series","screenplay","comedy","foreign","picture","film","role","score"]
+final_nom_cat1 = ["actor","director","movie","actress","tv","series","screenplay","comedy","foreign","picture","film","role","score","musical","language","mini-series","drama","demille","animated"]
+
+nominee_word=["nominated"]
+movie_list = ["film"]
+director_list = ["directing"]
+presenter_list = ["present","presenting","presented","presenter","presenters"]
 
 OFFICIAL_AWARDS_1315 = ['cecil b. demille award', 'best motion picture - drama', 'best performance by an actress in a motion picture - drama', 'best performance by an actor in a motion picture - drama', 'best motion picture - comedy or musical', 'best performance by an actress in a motion picture - comedy or musical', 'best performance by an actor in a motion picture - comedy or musical', 'best animated feature film', 'best foreign language film', 'best performance by an actress in a supporting role in a motion picture', 'best performance by an actor in a supporting role in a motion picture', 'best director - motion picture', 'best screenplay - motion picture', 'best original score - motion picture', 'best original song - motion picture', 'best television series - drama', 'best performance by an actress in a television series - drama', 'best performance by an actor in a television series - drama', 'best television series - comedy or musical', 'best performance by an actress in a television series - comedy or musical', 'best performance by an actor in a television series - comedy or musical', 'best mini-series or motion picture made for television', 'best performance by an actress in a mini-series or motion picture made for television', 'best performance by an actor in a mini-series or motion picture made for television', 'best performance by an actress in a supporting role in a series, mini-series or motion picture made for television', 'best performance by an actor in a supporting role in a series, mini-series or motion picture made for television']
 OFFICIAL_AWARDS_1819 = ['best motion picture - drama', 'best motion picture - musical or comedy', 'best performance by an actress in a motion picture - drama', 'best performance by an actor in a motion picture - drama', 'best performance by an actress in a motion picture - musical or comedy', 'best performance by an actor in a motion picture - musical or comedy', 'best performance by an actress in a supporting role in any motion picture', 'best performance by an actor in a supporting role in any motion picture', 'best director - motion picture', 'best screenplay - motion picture', 'best motion picture - animated', 'best motion picture - foreign language', 'best original score - motion picture', 'best original song - motion picture', 'best television series - drama', 'best television series - musical or comedy', 'best television limited series or motion picture made for television', 'best performance by an actress in a limited series or a motion picture made for television', 'best performance by an actor in a limited series or a motion picture made for television', 'best performance by an actress in a television series - drama', 'best performance by an actor in a television series - drama', 'best performance by an actress in a television series - musical or comedy', 'best performance by an actor in a television series - musical or comedy', 'best performance by an actress in a supporting role in a series, limited series or motion picture made for television', 'best performance by an actor in a supporting role in a series, limited series or motion picture made for television', 'cecil b. demille award']
+
+
+def get_nomination_cat(doc):
+    cate=0
+    for k in nom_keywords:
+        if k in doc:
+            cate=doc.index(k)
+            if(cate):
+                break
+    if cate != 0:
+        d=doc[cate:]
+        #d=doc
+        str = ' '.join(d)
+        s_nlp=nlp(str)
+        
+        commonNouns = [token.text for token in s_nlp if token.pos_ =='NOUN']
+        for c in final_nom_cat:
+            if any(c in s for s in commonNouns):
+                return c
+    return ""
+
+def get_presenter_cat(doc):
+    cate=0
+    for k in nom_keywords:
+        if k in doc:
+            cate=doc.index(k)
+            if(cate):
+                break
+    if cate != 0:
+        d=doc[cate:]
+        #d=doc
+        str = ' '.join(d)
+        s_nlp=nlp(str)
+        
+        commonNouns = [token.text for token in s_nlp if token.pos_ =='NOUN']
+        for c in final_nom_cat1:
+            if any(c in s for s in commonNouns):
+                return c
+    return ""
 
 def get_hosts(year):
     '''Hosts is a list of one or more strings. Do NOT change the name
@@ -65,6 +128,38 @@ def get_nominees(year):
     the name of this function or what it returns.'''
     # Your code here
     # def get_nominees(year, categories, cat_filters):
+    f = open(year)
+    data = json.load(f)
+    
+
+
+    nominees = {}
+    for cat in range(len(final_nom_cat)):
+
+
+        for d in data:
+            doc = d['text'].lower().split()
+            for i,nw in enumerate(nominee_words):    
+                if nw in doc:
+                    index=doc.index(nw)
+                    dw=doc[:index]
+                    str1 = ' '.join(dw)
+                    cate=get_nomination_cat(doc)
+                    sents = nlp(str1) 
+                    list_=[ee for ee in sents.ents if ee.label_ == 'PERSON']
+                    list_ = [s.text.strip() for s in list_]
+                    prefixes=('rt','@')
+                    list_ = [x for x in list_ if not x.startswith(prefixes)]
+                    if len(list_)>0 and cate:
+                        
+                        if cate in nominees:
+                            
+                            x = nominees[cate]
+                            x.extend(list_)
+                            nominees[cate]=list(set(x))
+                        else:
+                            nominees[cate] = list_
+    print(nominees)
     
     return nominees
 
@@ -114,7 +209,39 @@ def get_presenters(year):
     '''Presenters is a dictionary with the hard coded award
     names as keys, and each entry a list of strings. Do NOT change the
     name of this function or what it returns.'''
-    # Your code here
+    f = open(year)
+    data = json.load(f)
+
+
+    presenters = {}
+
+
+    for d in data:
+        doc = d['text'].lower().split()
+        
+        for i,nw in enumerate(presenter_list):    
+            if nw in doc:
+                index=doc.index(nw)
+                
+                dw=doc[:index]
+                #dw = list(re.sub(r"@:", "", str(dw)))
+                str1 = ' '.join(dw)
+                cate=get_presenter_cat(doc)
+                sents = nlp(str1) 
+                list_=[ee for ee in sents.ents if ee.label_ == 'PERSON']
+                list_ = [s.text.strip() for s in list_]
+                prefixes = ('rt','@')
+                list_ = [x for x in list_ if not x.startswith(prefixes)]
+                if len(list_)>0 and cate:
+                    #print("NW:",nw,"ACTOR:",list_,"CATEGORY: ",cate,"TWEET",d['text'])
+                    if cate in presenters:
+                        
+                        x = presenters[cate]
+                        x.extend(list_)
+                        presenters[cate]=list(set(x))
+                    else:
+                        presenters[cate] = list_
+    print(presenters)
     return presenters
 
 
